@@ -36,7 +36,6 @@ namespace ActivesAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
