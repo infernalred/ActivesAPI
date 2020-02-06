@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using ActivesAPI.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 
 namespace ActivesAPI
 {
@@ -30,6 +32,9 @@ namespace ActivesAPI
             string dbString = Configuration.GetConnectionString("SQLExpress");
             services.AddDbContext<DataContext>(x => x.UseSqlServer(dbString));
             services.AddControllers();
+            services.AddCors();
+            services.AddAutoMapper(typeof(ActivesRepository).Assembly);
+            services.AddScoped<IActivesRepository, ActivesRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +50,8 @@ namespace ActivesAPI
 
             app.UseAuthorization();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseEndpoints(endpoints =>
             {

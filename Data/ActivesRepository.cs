@@ -1,4 +1,5 @@
 ﻿using ActivesAPI.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,24 +9,35 @@ namespace ActivesAPI.Data
 {
     public class ActivesRepository : IActivesRepository
     {
+        private readonly DataContext _context;
+
+        public ActivesRepository(DataContext context)
+        {
+            _context = context;
+        }
+
         public void Add<T>(T entity) where T : class
         {
-            throw new NotImplementedException();
+            _context.Add(entity);
         }
 
         public void Delete<T>(T entity) where T : class
         {
-            throw new NotImplementedException();
+            _context.Remove(entity);
         }
 
-        public Task<Computer> GetComputer(int id)
+        public async Task<Computer> GetComputer(int id)
         {
-            throw new NotImplementedException();
+            var computer = await _context.Computers.Include(x => x.User).Include(x => x.Network).FirstOrDefaultAsync(c => c.Id == id);
+
+            return computer;
         }
 
-        public Task<Computer> GetComputers()
+        public async Task<IEnumerable<Computer>> GetComputers()
         {
-            throw new NotImplementedException();
+            var computers = await _context.Computers.Include(x => x.User).Include(x => x.Network).ToListAsync();
+
+            return computers;
         }
 
         public Task<Monitor> GetMonitor(int id)
@@ -38,9 +50,6 @@ namespace ActivesAPI.Data
             throw new NotImplementedException();
         }
 
-        public Task<bool> SaveAll()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<bool> SaveAll() => await _context.SaveChangesAsync() > 0;
     }
 }
