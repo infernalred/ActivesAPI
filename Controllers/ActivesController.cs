@@ -20,45 +20,42 @@ namespace ActivesAPI.Controllers
         }
 
         //GET: api/Actives/GetComputers
-        [HttpGet]
+        [HttpGet(Name = "GetComputers")]
+        [Route("[action]")]
         public async Task<IActionResult> GetComputers()
         {
             var computers = await _repo.GetComputers();
             return Ok(computers);
         }
 
+        [HttpGet(Name = "GetMonitors")]
+        [Route("[action]")]
+        public async Task<IActionResult> GetMonitors()
+        {
+            var monitors = await _repo.GetMonitors();
+            return Ok(monitors);
+        }
 
 
         // GET: api/Actives
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
         // GET: api/Actives/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //[HttpGet("{id}", Name = "Get")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
-        // POST: api/Actives
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        //// POST: api/Actives
+        //[HttpPost]
+        //public void Post([FromBody] string value)
+        //{
+        //}
 
-        // PUT: api/Actives/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
