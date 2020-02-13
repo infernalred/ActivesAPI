@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ActivesAPI.Data;
+using ActivesAPI.Dtos;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,10 +15,12 @@ namespace ActivesAPI.Controllers
     public class ActivesController : ControllerBase
     {
         private readonly IActivesRepository _repo;
+        private readonly IMapper _mapper;
 
-        public ActivesController(IActivesRepository repo)
+        public ActivesController(IActivesRepository repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
         //GET: api/Actives/GetComputers
@@ -25,7 +29,8 @@ namespace ActivesAPI.Controllers
         public async Task<IActionResult> GetComputers()
         {
             var computers = await _repo.GetComputers();
-            return Ok(computers);
+            var computersReturn = _mapper.Map<IEnumerable<ComputerForShowDto>>(computers);
+            return Ok(computersReturn);
         }
 
         [HttpGet(Name = "GetMonitors")]
