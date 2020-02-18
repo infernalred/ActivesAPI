@@ -12,6 +12,7 @@ namespace ActivesAPI.Data
         void Delete<T>(T entity) where T : class;
         Task<bool> SaveAll();
         Task<IEnumerable<Computer>> GetComputers();
+        Task<IEnumerable<User>> GetUsers();
         Task<Computer> GetComputer(int id);
         Task<Monitor> GetMonitors();
         Task<Monitor> GetMonitor(int id);

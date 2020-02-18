@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ActivesAPI.Data;
 using ActivesAPI.Dtos;
+using ActivesAPI.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,20 @@ namespace ActivesAPI.Controllers
             return Ok(computersReturn);
         }
 
+        //Save new computer
+        [HttpPost(Name = "AddComputer")]
+        [Route("[action]")]
+        public async Task<IActionResult> AddComputer([FromBody]ComputerNewDto computerNewDto)
+        {
+            var computerToAdd = _mapper.Map<Computer>(computerNewDto);
+            computerToAdd.Inventory = computerToAdd.Id.ToString();
+            _repo.Add(computerToAdd);
+            if (await _repo.SaveAll())
+                return NoContent();
+
+            throw new Exception($"Creating meeting failed on save");
+        }
+
         [HttpGet(Name = "GetMonitors")]
         [Route("[action]")]
         public async Task<IActionResult> GetMonitors()
@@ -41,7 +56,13 @@ namespace ActivesAPI.Controllers
             return Ok(monitors);
         }
 
-
+        [HttpGet(Name = "GetUsers")]
+        [Route("[action]")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _repo.GetUsers();
+            return Ok(users);
+        }
         // GET: api/Actives
         //[HttpGet]
         //public IEnumerable<string> Get()

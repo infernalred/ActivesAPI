@@ -15,6 +15,12 @@ namespace ActivesAPI.Helpers
             CreateMap<Computer, ComputerForShowDto>()
                 .ForMember(d => d.LastUpdate, o =>
                 o.MapFrom(s => s.LastUpdate.ToLocalTime().ToString()));
+            CreateMap<ComputerNewDto, Computer>()
+                .ForMember(d => d.LastUpdate, o =>
+                {
+                    o.MapFrom(s => DateTime.Now);
+                });
+                
         }
     }
 }

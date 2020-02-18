@@ -50,6 +50,12 @@ namespace ActivesAPI.Data
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            var users = await _context.Users.Include(x => x.Room).ToListAsync(); //Include(x => x.Room)
+            return users;
+        }
+
         public async Task<bool> SaveAll() => await _context.SaveChangesAsync() > 0;
     }
 }
