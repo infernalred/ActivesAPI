@@ -28,7 +28,7 @@ namespace ActivesAPI.Data
 
         public async Task<Computer> GetComputer(int id)
         {
-            var computer = await _context.Computers.Include(x => x.User).Include(x => x.Network).FirstOrDefaultAsync(c => c.Id == id);
+            var computer = await _context.Computers.Include(x => x.User).ThenInclude(x => x.Room).Include(x => x.Network).FirstOrDefaultAsync(c => c.Id == id);
 
             return computer;
         }

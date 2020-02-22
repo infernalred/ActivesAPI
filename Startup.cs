@@ -32,6 +32,7 @@ namespace ActivesAPI
             services.AddCors();
             services.AddAutoMapper(typeof(ActivesRepository).Assembly);
             services.AddScoped<IActivesRepository, ActivesRepository>();
+            services.AddScoped<IdToInventory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

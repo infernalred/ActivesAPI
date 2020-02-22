@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ActivesAPI.Data;
 using ActivesAPI.Dtos;
+using ActivesAPI.Helpers;
 using ActivesAPI.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +18,13 @@ namespace ActivesAPI.Controllers
     {
         private readonly IActivesRepository _repo;
         private readonly IMapper _mapper;
+        private readonly IdToInventory _idToInventory;
 
-        public ActivesController(IActivesRepository repo, IMapper mapper)
+        public ActivesController(IActivesRepository repo, IMapper mapper, IdToInventory idToInventory)
         {
             _repo = repo;
             _mapper = mapper;
+            _idToInventory = idToInventory;
         }
 
         //GET: api/Actives/GetComputers
@@ -34,18 +37,44 @@ namespace ActivesAPI.Controllers
             return Ok(computersReturn);
         }
 
+        //GET: api/Actives/GetComputer/id
+        [HttpGet("{id}", Name = "GetComputer")]
+        [Route("[action]/{id}")]
+        public async Task<IActionResult> GetComputer(int id)
+        {
+            var computer = await _repo.GetComputer(id);
+            //var computersReturn = _mapper.Map<IEnumerable<ComputerForShowDto>>(computer);
+            return Ok(computer);
+        }
+
         //Save new computer
         [HttpPost(Name = "AddComputer")]
         [Route("[action]")]
         public async Task<IActionResult> AddComputer([FromBody]ComputerNewDto computerNewDto)
         {
             var computerToAdd = _mapper.Map<Computer>(computerNewDto);
-            computerToAdd.Inventory = computerToAdd.Id.ToString();
             _repo.Add(computerToAdd);
+            if (await _repo.SaveAll())
+            {
+                if (await _idToInventory.UpdateInventory(computerToAdd))
+                    return NoContent();
+            }
+                
+
+            throw new Exception($"Creating meeting failed on save");
+        }
+
+        //Save new computer
+        [HttpPut("{id}", Name = "UpdateComputer")]
+        [Route("[action]/{id}")]
+        public async Task<IActionResult> UpdateComputer(int id, [FromBody]ComputerUpdateDto computerUpdateDto)
+        {
+            var computerFromRepo = await _repo.GetComputer(id);
+            _mapper.Map(computerUpdateDto, computerFromRepo);
             if (await _repo.SaveAll())
                 return NoContent();
 
-            throw new Exception($"Creating meeting failed on save");
+            throw new Exception($"Updating computer {computerUpdateDto.Name} failed on server");
         }
 
         [HttpGet(Name = "GetMonitors")]

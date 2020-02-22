@@ -20,7 +20,12 @@ namespace ActivesAPI.Helpers
                 {
                     o.MapFrom(s => DateTime.Now);
                 });
-                
+            CreateMap<ComputerUpdateDto, Computer>()
+                .ForMember(d => d.LastUpdate, o =>
+                {
+                    o.MapFrom(s => DateTime.Now);
+                });
+
         }
     }
 }
