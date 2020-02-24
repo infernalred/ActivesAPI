@@ -25,7 +25,7 @@ namespace ActivesAPI.Helpers
                 {
                     o.MapFrom(s => DateTime.Now);
                 });
-
+            CreateMap<NetworkNewDto, Network>();
         }
     }
 }
