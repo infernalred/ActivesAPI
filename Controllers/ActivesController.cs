@@ -64,12 +64,17 @@ namespace ActivesAPI.Controllers
             throw new Exception($"Creating meeting failed on save");
         }
 
-        //Save new computer
+        //Update computer
         [HttpPut("{id}", Name = "UpdateComputer")]
         [Route("[action]/{id}")]
         public async Task<IActionResult> UpdateComputer(int id, [FromBody]ComputerUpdateDto computerUpdateDto)
         {
             var computerFromRepo = await _repo.GetComputer(id);
+            foreach (var item in computerFromRepo.Network)
+            {
+                _repo.Delete(item);
+            }
+
             _mapper.Map(computerUpdateDto, computerFromRepo);
             if (await _repo.SaveAll())
                 return NoContent();

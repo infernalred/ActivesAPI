@@ -14,5 +14,6 @@ namespace ActivesAPI.Dtos
         public bool OutOffOffice { get; set; }
         public bool Broken { get; set; }
         public int UserId { get; set; }
+        public ICollection<NetworkNewDto> Network { get; set; }
     }
 }

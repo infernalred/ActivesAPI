@@ -17,5 +17,6 @@ namespace ActivesAPI.Data
         public DbSet<Room> Rooms { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
+
     }
 }
