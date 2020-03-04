@@ -1,4 +1,5 @@
-﻿using ActivesAPI.Models;
+﻿using ActivesAPI.Helpers;
+using ActivesAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -33,27 +34,48 @@ namespace ActivesAPI.Data
             return computer;
         }
 
-        public async Task<IEnumerable<Computer>> GetComputers()
+        public async Task<PageList<Computer>> GetComputers(UserParams userParams)
         {
-            var computers = await _context.Computers.Include(x => x.User).Include(x => x.Network).ToListAsync();
+            var computers = _context.Computers.Include(x => x.User).Include(x => x.Network).AsQueryable();
 
-            return computers;
+            if (userParams.Search != null)
+            {
+                userParams.Search = userParams.Search.TrimStart().TrimEnd();
+                computers = computers.Where(c => c.Inventory.Contains(userParams.Search) || c.Name.Contains(userParams.Search));
+            }
+
+            return await PageList<Computer>.CreateAsync(computers, userParams.PageNumber, userParams.PageSize);
         }
 
-        public Task<Monitor> GetMonitor(int id)
+        public async Task<Monitor> GetMonitor(int id)
         {
-            throw new NotImplementedException();
+            var monitor = await _context.Monitors.Include(x => x.User).ThenInclude(x => x.Room).Include(x => x.Vendor).FirstOrDefaultAsync(c => c.Id == id);
+
+            return monitor;
         }
 
-        public Task<Monitor> GetMonitors()
+        public async Task<PageList<Monitor>> GetMonitors(UserParams userParams)
         {
-            throw new NotImplementedException();
+            var monitors = _context.Monitors.Include(x => x.User).Include(x => x.Vendor).AsQueryable();
+
+            if (userParams.Search != null)
+            {
+                userParams.Search = userParams.Search.TrimStart().TrimEnd();
+                monitors = monitors.Where(c => c.Inventory.Contains(userParams.Search) || c.Serial.Contains(userParams.Search));
+            }
+
+            return await PageList<Monitor>.CreateAsync(monitors, userParams.PageNumber, userParams.PageSize);
         }
 
         public async Task<IEnumerable<User>> GetUsers()
         {
             var users = await _context.Users.Include(x => x.Room).ToListAsync(); //Include(x => x.Room)
             return users;
+        }
+        public async Task<IEnumerable<Vendor>> GetVendors()
+        {
+            var vendors = await _context.Vendors.ToListAsync();
+            return vendors;
         }
 
         public async Task<bool> SaveAll() => await _context.SaveChangesAsync() > 0;

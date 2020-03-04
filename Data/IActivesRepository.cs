@@ -1,4 +1,5 @@
-﻿using ActivesAPI.Models;
+﻿using ActivesAPI.Helpers;
+using ActivesAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace ActivesAPI.Data
         void Add<T>(T entity) where T : class;
         void Delete<T>(T entity) where T : class;
         Task<bool> SaveAll();
-        Task<IEnumerable<Computer>> GetComputers();
+        //Task<IEnumerable<Computer>> GetComputers();
+        Task<PageList<Computer>> GetComputers(UserParams userParams);
         Task<IEnumerable<User>> GetUsers();
+        Task<IEnumerable<Vendor>> GetVendors();
         Task<Computer> GetComputer(int id);
-        Task<Monitor> GetMonitors();
+        Task<PageList<Monitor>> GetMonitors(UserParams userParams);
         Task<Monitor> GetMonitor(int id);
     }
 }

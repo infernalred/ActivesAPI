@@ -16,6 +16,8 @@ namespace ActivesAPI.Models
         public bool Broken { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
+        public int VendorId { get; set; }
+        public Vendor Vendor { get; set; }
 
     }
 }

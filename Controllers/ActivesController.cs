@@ -30,10 +30,11 @@ namespace ActivesAPI.Controllers
         //GET: api/Actives/GetComputers
         [HttpGet(Name = "GetComputers")]
         [Route("[action]")]
-        public async Task<IActionResult> GetComputers()
+        public async Task<IActionResult> GetComputers([FromQuery]UserParams userParams)
         {
-            var computers = await _repo.GetComputers();
+            var computers = await _repo.GetComputers(userParams);
             var computersReturn = _mapper.Map<IEnumerable<ComputerForShowDto>>(computers);
+            Response.AddPagination(computers.CurrentPage, computers.PageSize, computers.TotalCount, computers.TotalPage);
             return Ok(computersReturn);
         }
 
@@ -84,9 +85,10 @@ namespace ActivesAPI.Controllers
 
         [HttpGet(Name = "GetMonitors")]
         [Route("[action]")]
-        public async Task<IActionResult> GetMonitors()
+        public async Task<IActionResult> GetMonitors([FromQuery]UserParams userParams)
         {
-            var monitors = await _repo.GetMonitors();
+            var monitors = await _repo.GetMonitors(userParams);
+            Response.AddPagination(monitors.CurrentPage, monitors.PageSize, monitors.TotalCount, monitors.TotalPage);
             return Ok(monitors);
         }
 
